@@ -6,17 +6,19 @@ import { useRouter } from "next/navigation";
 import { Input, Button } from "@/components";
 
 //API
-import { onLogin as LoginAPI } from "@/api/authAPI";
-import { PAGE_ROUTEPATH } from "../../utils/general";
+import { onRegister as RegisterAPI } from "@/api/authAPI";
+import { PAGE_ROUTEPATH } from "../../../utils/general";
 
 //Redux
 import { setLoginState } from "@/store/reducer";
 import { useDispatch } from "react-redux";
+import { error } from "console";
 
-export default function Home() {
+type Props = {};
+
+function page({}: Props) {
   const router = useRouter();
   const dispatch = useDispatch();
-  const [generalCondition, setGeneralConditon] = useState({});
 
   const [form, setForm] = useState({
     email: {
@@ -29,7 +31,50 @@ export default function Home() {
       error: false,
       message: "",
     },
+    phone: {
+      value: "",
+      error: false,
+      message: "",
+    },
+    name: {
+      value: "",
+      error: false,
+      message: "",
+    },
   });
+
+  const onRegister = async (e: any) => {
+    e.preventDefault();
+
+    let isEmpty = false;
+
+    Object.entries(form).map((val: any) => {
+      if (val[1].value === "") {
+        setForm((prev: any) => ({
+          ...prev,
+          [val[0]]: {
+            ...prev[val[0]],
+            error: true,
+          },
+        }));
+
+        isEmpty = true;
+      }
+    });
+
+    if (!isEmpty) {
+      const result: any = await RegisterAPI({
+        email: form.email.value,
+        password: form.password.value,
+        name: form.name.value,
+        phone: form.phone.value
+      });
+
+      if (result?.status === 200) {
+        router.push(PAGE_ROUTEPATH.DEFAULT);
+      }
+    }
+  };
 
   const onChange = (name: any, value: any) => {
     setForm((prev: any) => ({
@@ -37,33 +82,9 @@ export default function Home() {
       [name]: {
         ...prev[name],
         value: value,
+        error: false,
       },
     }));
-  };
-
-  const onLogin = async (e: any) => {
-    e.preventDefault();
-
-    const result: any = await LoginAPI({
-      email: form.email.value,
-      password: form.password.value,
-    });
-
-    if (result.status === 200) {
-      const { id, name, phone, email, token } = result.data;
-
-      dispatch(
-        setLoginState({
-          id,
-          name,
-          phone,
-          email,
-          token,
-        })
-      );
-
-      router.push(PAGE_ROUTEPATH.Dashboard);
-    }
   };
 
   return (
@@ -75,25 +96,34 @@ export default function Home() {
       <div className="flex flex-col justify-center items-center gap-10 basis-full lg:basis-1/2 bg-white text-black px-5 lg:px-0">
         {/* Header Section */}
         <div className="flex flex-col items-center gap-2">
-          <span className="text-4xl font-bold">Welcome Back</span>
+          <span className="text-4xl font-bold">Register</span>
           <span className="text-sm">
-            Enter email and password to access your account
+            Please fill all field to proceed your signup
           </span>
         </div>
 
         {/* Input Section */}
 
         <form
-          id="formLogin"
+          id="formRegister"
           className="flex flex-col items-center gap-5 w-full max-w-[25rem]"
-          onSubmit={onLogin}
+          onSubmit={onRegister}
         >
+          <Input
+            onChange={onChange}
+            label="Name"
+            name={"name"}
+            value={form.name.value}
+            placeHolder="Input Your Name"
+            error={form.name.error}
+          />
           <Input
             onChange={onChange}
             label="Email"
             name={"email"}
             value={form.email.value}
             placeHolder="Input Your Email"
+            error={form.email.error}
           />
           <Input
             onChange={onChange}
@@ -101,28 +131,39 @@ export default function Home() {
             name={"password"}
             value={form.password.value}
             placeHolder="********"
+            error={form.password.error}
+          />
+          <Input
+            onChange={onChange}
+            label="Phone"
+            name={"phone"}
+            value={form.phone.value}
+            placeHolder="+62 821203089234"
+            error={form.phone.error}
           />
         </form>
 
         {/* Button Action */}
         <Button
-          name="Sign In"
+          name="Sign Up"
           type={"submit"}
-          form={"formLogin"}
+          form={"formRegister"}
           className="max-w-[25rem]"
         />
 
         {/* Sign Up */}
         <span className="text-sm">
-          Dont have any account?{" "}
+          Alread have account?{" "}
           <span
             className="font-bold underline"
-            onClick={() => router.push("/Register")}
+            onClick={() => router.push("/")}
           >
-            Sign Up
+            Sign in
           </span>
         </span>
       </div>
     </div>
   );
 }
+
+export default page;

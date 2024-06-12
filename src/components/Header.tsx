@@ -11,11 +11,20 @@ import UserIcon from "../../public/user.svg";
 
 //Redux
 import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import { purgeStoredState } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
 type Props = {};
 
 function Header({}: Props) {
   const result = useSelector((state: any) => state.generalReducer);
+  const router = useRouter();
+
+  const persistConfig = {
+    key: "root",
+    storage,
+  };
 
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [userData, setUserData] = useState({
@@ -40,11 +49,23 @@ function Header({}: Props) {
     }));
   }, [result.UserData]);
 
+  const navigateTo = (path: string) => {
+    if (path === "/") {
+      onLogoutRemoveSession();
+    }
+
+    router.push(path);
+  };
+
+  const onLogoutRemoveSession = () => {
+    purgeStoredState(persistConfig);
+  };
+
   return (
     <div className="flex justify-between items-center p-5 shadow-md relative ">
       {/* Panel */}
       <div
-        className={`flex flex-col absolute gap-3 top-24 bg-white border rounded-xl p-5 transition-all shadow-md ${
+        className={`flex flex-col absolute gap-3 duration-500 top-24 bg-white border rounded-xl p-5 transition-all shadow-md z-50 ${
           isPanelOpen ? "right-5  " : "-right-full"
         }`}
       >
@@ -67,7 +88,13 @@ function Header({}: Props) {
           </div>
         </div>
         <div className="border-b border-zinc-300" />
-        <div className="flex gap-3 items-center">
+        <div
+          className="flex gap-3 items-center"
+          onClick={() => {
+            onTogglePanel();
+            navigateTo("Edit-Profile");
+          }}
+        >
           <Image
             src={EditLogo}
             alt="Logo-Header"
@@ -76,7 +103,13 @@ function Header({}: Props) {
           <span className="text-gray-2 text-sm">Edit Profile</span>
         </div>
         <div className="border-b border-zinc-300" />
-        <div className="flex gap-3 items-center">
+        <div
+          className="flex gap-3 items-center"
+          onClick={() => {
+            onTogglePanel();
+            navigateTo("/");
+          }}
+        >
           <Image
             src={LogoutLogo}
             alt="Logo-Header"
@@ -88,7 +121,12 @@ function Header({}: Props) {
 
       <Image src={Logo} alt="Logo-Header" className="h-10 w-10 rounded-full" />
       <div className="flex gap-8 text-black">
-        <span className="cursor-pointer hover:opacity-50 font-bold">Home</span>
+        <span
+          className="cursor-pointer hover:opacity-50 font-bold"
+          onClick={() => navigateTo("/Dashboard")}
+        >
+          Home
+        </span>
         <span className="cursor-pointer hover:opacity-50 font-bold">
           Service
         </span>

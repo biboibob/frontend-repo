@@ -24,3 +24,16 @@ export const onLogin = (payload: any) => {
       return console.log(error);
     });
 };
+
+export const onRegister = (payload: any) => {
+  //   axios.defaults.baseURL = URL;
+
+  return axios
+    .post(API_ACTION.ADD_USER, { ...payload })
+    .then((res: any) => {
+      return res;
+    })
+    .catch(function (error: any) {
+      return console.log(error);
+    });
+};

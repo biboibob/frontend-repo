@@ -4,9 +4,17 @@ export const generalSlice = createSlice({
   name: "generalReducer",
   initialState: {
     UI: {
-      isLoading: false,
+      isLoading: {
+        status: false,
+        message: ""
+      },
+      onAlert: {
+        status: false,
+        message: ""
+      }
     },
     UserData: {
+      id_user: "",
       name: "",
       email: "",
       phone: "",
@@ -19,10 +27,18 @@ export const generalSlice = createSlice({
         ...action.payload,
       };
     },
+    updateUserState: (state:any, action) => {
+      state.UserData = {
+        ...state.UserData,
+        name: action.payload.name,
+        email: action.payload.email,
+        phone: action.payload.phone,
+      };
+    }
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setLoginState } = generalSlice.actions;
+export const { setLoginState, updateUserState } = generalSlice.actions;
 
 export default generalSlice.reducer;

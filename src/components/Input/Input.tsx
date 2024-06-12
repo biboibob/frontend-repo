@@ -11,7 +11,8 @@ type Props = {
   className?: string;
   labelClassName?: string;
   wrapperClassName?: string;
-  placeHolder?: string
+  placeHolder?: string;
+  error?: boolean;
 };
 
 function Input({
@@ -24,7 +25,8 @@ function Input({
   wrapperClassName = "",
   labelClassName = "",
   className = "",
-  placeHolder = "Input Here"
+  placeHolder = "Input Here",
+  error = false,
 }: Props) {
   return (
     <div
@@ -32,7 +34,11 @@ function Input({
         vertical ? "flex-col" : "flex-row"
       } ${wrapperClassName} w-full`}
     >
-      <label className={`${noLabel ? "hidden" : "flex"} ${labelClassName} font-bold`}>
+      <label
+        className={`${
+          noLabel ? "hidden" : "flex"
+        } ${labelClassName} font-bold text-black`}
+      >
         {label}
       </label>
       <MUIInput
@@ -42,6 +48,7 @@ function Input({
         className={`${className} py-2`}
         placeholder={placeHolder}
       />
+      {error && <span className="text-sm text-red mt-1">Please fill this field  </span>}
     </div>
   );
 }
