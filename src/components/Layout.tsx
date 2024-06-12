@@ -12,9 +12,9 @@ type Props = {
 };
 
 function Layout({ children }: Props) {
-  const idUser = useSelector((state: any) => state.generalReducer.UserData.id);
+  // const idUser = useSelector((state: any) => state.generalReducer.UserData.id);
 
-  const router = useRouter();
+  // const router = useRouter();
   const pathname = usePathname();
   const publicRoute = ["/", "/Register"];
 

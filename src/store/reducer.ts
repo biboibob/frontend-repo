@@ -6,15 +6,15 @@ export const generalSlice = createSlice({
     UI: {
       isLoading: {
         status: false,
-        message: ""
+        message: "",
       },
       onAlert: {
         status: false,
-        message: ""
-      }
+        message: "",
+      },
     },
     UserData: {
-      id_user: "",
+      id: "",
       name: "",
       email: "",
       phone: "",
@@ -23,18 +23,19 @@ export const generalSlice = createSlice({
   },
   reducers: {
     setLoginState: (state: any, action) => {
-      state.UserData = {
-        ...action.payload,
-      };
+        state.UserData = {
+          ...state.UserData,
+          ...action.payload,
+        };
     },
-    updateUserState: (state:any, action) => {
+    updateUserState: (state: any, action) => {
       state.UserData = {
         ...state.UserData,
         name: action.payload.name,
         email: action.payload.email,
         phone: action.payload.phone,
       };
-    }
+    },
   },
 });
 
