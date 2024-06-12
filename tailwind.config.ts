@@ -14,6 +14,11 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
         "bg-custom": "url('/public/background.webp')"
       },
+      colors: {
+        "red": "#F04438",
+        "gray": "#D0D0D0",
+        "gray-2": "#5F737F"
+      }
     },
   },
   plugins: [],

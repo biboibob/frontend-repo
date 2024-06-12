@@ -1,6 +1,13 @@
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+
+//Component
+import Layout from "@/components/Layout";
+
+//Redux
+import ReduxPersist from "@/store/storeProvide"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,8 +22,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html className="flex flex-col h-full w-full" lang="en">
-      <body className={`${inter.className} h-full w-full`}>{children}</body>
-    </html>
+    <ReduxPersist>
+      <html className="flex flex-col h-full w-full " lang="en">
+        <body className={`${inter.className} h-full w-ful `}>
+          <Layout>{children}</Layout>
+        </body>
+      </html>
+    </ReduxPersist>
   );
 }

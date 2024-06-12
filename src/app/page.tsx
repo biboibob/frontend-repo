@@ -1,10 +1,21 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 //Component
 import { Input, Button } from "@/components";
 
+//API
+import { onLogin as LoginAPI } from "@/api/authAPI";
+import { PAGE_ROUTEPATH } from "../../utils/general";
+
+//Redux
+import { setLoginState } from "@/store/reducer";
+import { useDispatch } from "react-redux";
+
 export default function Home() {
+  const router = useRouter();
+  const dispatch = useDispatch()
   const [generalCondition, setGeneralConditon] = useState({});
 
   const [form, setForm] = useState({
@@ -30,9 +41,26 @@ export default function Home() {
     }));
   };
 
-  const onLogin = (e: any) => {
+  const onLogin = async (e: any) => {
     e.preventDefault();
-    console.log("test");
+
+    const result: any = await LoginAPI({
+      email: form.email.value,
+      password: form.password.value,
+    });
+
+    if (result.status === 200) {
+      const { name, phone, email, token } = result.data;
+
+      dispatch(setLoginState({
+        name,
+        phone,
+        email,
+        token,
+      }))
+
+      router.push(PAGE_ROUTEPATH.Dashboard);
+    }
   };
 
   return (
@@ -48,7 +76,7 @@ export default function Home() {
           <span className="text-sm">
             Enter email and password to access your account
           </span>
-        </div>  
+        </div>
 
         {/* Input Section */}
 
